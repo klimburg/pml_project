@@ -1,0 +1,10 @@
+---
+title: "Citations"
+author: "Kevin C. Limburg"
+date: "09/01/2014"
+output: html_document
+---
+
+1. Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
+
+2.
