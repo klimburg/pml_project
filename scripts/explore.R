@@ -2,7 +2,7 @@
 
 # allow parallel processing
 require(doSNOW)
-registerDoSNOW(makeCluster(5, type="SOCK"))
+registerDoSNOW(makeCluster(8, type="SOCK"))
 getDoParWorkers()
 getDoParName()
 getDoParVersion()
@@ -51,6 +51,8 @@ df.train.sub$cvtd_timestamp<-as.POSIXct(df.train$cvtd_timestamp,
 # }
 # 
 # summary(df.train.sub$gyros_forearm_x)
+
+library(dplyr)
 outlier<-which(df.train.sub[,"gyros_forearm_x"] <(-20))
 #drop obseveration from data
 df.train.sub<-df.train.sub[-outlier,]
@@ -90,9 +92,7 @@ fancyRpartPlot(model.rpart.bs25x1$finalModel)
 confusionMatrix(pred.train,reference=df.train.sub$classe)
 
 
-# random forest model
-
-
+# random forest models
 
 set.seed(1234)
 model.rf.cv10x1 <- train(classe~., data=df.train.sub[,-c(1:6)], method="rf",ntree=10,
@@ -105,13 +105,39 @@ model.rf.bs25x1 <- train(classe~., data=df.train.sub[,-c(1:6)], method="rf",
                            trControl = trainControl(method = "boot", 
                                                     number = 25,
                                                     repeats = 1),
-                           ntree=20)
+                           ntree=10)
 
-model.rf.cv10x1$modelInfo$parameters
-varImp(model.rf.cv10x1)
+# model diagnostics
+model.rf.cv10x1
+varImps.rf.cv10<-varImp(model.rf.cv10x1)
 model.rf.cv10x1$finalModel
 pred.train<-predict(model.rf.cv10x1$finalModel,df.train.sub[,-c(1:6)])
 confusionMatrix(pred.train,reference=df.train.sub$classe)
+
+# trees
+library(rattle)
+tree.1.rf<-getTree(model.rf.cv10x1$finalModel,k=1,labelVar = T)
+plot(tree.1.rf)
+
+#plots by classe
+library(ggplot2)
+df.varImps<-varImps.rf.cv10[[1]]
+df.varImps$var.name<-rownames(df.varImps)
+df.varImps<-df.varImps%>%arrange(desc(Overall))
+df.plot<-df.train[,c("classe", df.varImps[1:5,2])]
+qplot(x = yaw_belt, y = roll_belt, data= df.plot, color = classe, alpha = .4)
+library(reshape)
+
+library(car)
+cols<-sapply(df.plot$classe,function(x){switch(x,
+             "A" = "blue",
+             "B" = "red",
+             "C" = "green",
+             "D" = "black",
+             "E" = "purple")})
+df.plot$cols<-cols
+sample<-df.plot%>%sample_n(size=100)
+scatterplotMatrix(sample[,2:6],smoother = NULL, groups = sample$classe)
 
 model.rf.bs25x1
 plot(model.rf.bs25x1)
@@ -120,7 +146,10 @@ model.rf.cv10x1$finalModel
 pred.train<-predict(model.rf.bs25x1$finalModel,df.train.sub[,-c(1:6)])
 confusionMatrix(pred.train,reference=df.train.sub$classe)
 
+
+#Final Predictions
 pred.test.bs25<-predict(model.rf.bs25x1$finalModel,newdata=df.test[,!allNA])
 pred.test.cv10<-predict(model.rf.cv10x1$finalModel,newdata=df.test[,!allNA])
 
-getTree(model.rf.cv10x1$finalModel,k=2,labelVar = T)
+
+
