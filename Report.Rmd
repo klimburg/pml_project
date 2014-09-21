@@ -1,0 +1,7 @@
+---
+title: "Rating Effectiveness of Excercises"
+author: "Kevin C. Limburg"
+date: "09/20/2014"
+output: html_document
+---
+
