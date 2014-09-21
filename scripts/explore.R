@@ -1,4 +1,6 @@
 # Explore training set data
+
+# allow parallel processing
 require(doSNOW)
 registerDoSNOW(makeCluster(5, type="SOCK"))
 getDoParWorkers()
