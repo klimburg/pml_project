@@ -7,7 +7,7 @@ pml_write_files = function(x){
     }
 }
 
-#pml_write_files(pred.test)
+# pml_write_files(pred.test.cv10)
 
 
 
@@ -21,4 +21,4 @@ pml_read_files <- function(x="./"){
     }
     return(pred.test)
 }
-#pred.test<-pml_read_files()
+# pred.test<-pml_read_files()

@@ -91,7 +91,7 @@ pred.train<-predict(model.rpart.bs25x1$finalModel,
 fancyRpartPlot(model.rpart.bs25x1$finalModel)
 confusionMatrix(pred.train,reference=df.train.sub$classe)
 
-
+library(caret)
 # random forest models
 
 set.seed(1234)
@@ -106,6 +106,11 @@ model.rf.bs25x1 <- train(classe~., data=df.train.sub[,-c(1:6)], method="rf",
                                                     number = 25,
                                                     repeats = 1),
                            ntree=10)
+
+set.seed(1234)
+model.lda <- train(classe~., data=df.train.sub[,-c(1:6)], method="lda")
+pred.lda<-predict(model.lda, df.test)
+confusionMatrix(pred.lda,e)
 
 # model diagnostics
 model.rf.cv10x1
