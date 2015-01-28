@@ -7,7 +7,7 @@ output: html_document
   
 ```{r, echo=FALSE}
 library(knitr)
-opts_chunk$set(echo=FALSE, cache=TRUE, comment="", message=FALSE, warning=FALSE, fig.keep='none', results='hide')
+opts_chunk$set(echo=TRUE, cache=TRUE, comment="", message=FALSE, warning=FALSE, fig.keep='none', results='hide')
 
 ```
 
